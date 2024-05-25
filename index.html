@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Test</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+    
+    <section id="main-section">
+        <h1 id="test-title"></h1>
+        <div id="text-area">
+            <p></p>
+        </div>
+        <div class="footer">
+            <input type="text" autofocus="on" autocomplete="off" id="input" />
+            <button id="reset" class="reset"></button>
+        </div>
+    </section>
+    
+    <p id="duration"></p>
+    <select id="lang-select">
+        <option value="rus" selected="true">Rus</option>
+        <option value="en">En</option>
+    </select>
+    
+    <div id="modal">
+        <p id="wpm"></p>
+        <p id="accuracy"></p>
+        <button id="modal-close">x</button>
+        <div>
+            <button id="modal-reset" class="reset"></button>
+        </div>
+    </div>
+
+    <script type="module" src="./script.js"></script>
+</body>
+
+</html>
