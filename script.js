@@ -1,5 +1,5 @@
 import db from "./data.js";
-let textWords, interval, textP, reset, duration, input, spans, currentWordIndex, blocked, started, time, winScore, failScore, allTypingCount, incorrectTypingCount, correctTypingCount, timePassed, accuracy, modalClose, testTitle, intLang;
+let textWords, interval, textP, reset, duration, input, spans, currentWordIndex, blocked, started, time, winScore, failScore, allTypingCount, incorrectTypingCount, correctTypingCount, timePassed, accuracy, modalClose, testTitle, intLang, scoresOfStorage, averageReset, averageScore, averageScoreText, resetBtns;
 
 document.getElementById("lang-select").addEventListener("change", (e) => {
     setInitials(e.target.value);
@@ -17,23 +17,41 @@ function setInitials(lang) {
     textP = document.querySelector("#text-area > p");
     modalClose = document.getElementById("modal-close");
     testTitle = document.getElementById("test-title");
+    averageScoreText = document.getElementById("average-score");
+    resetBtns = document.getElementsByClassName("reset");
+    averageReset = document.getElementById("average-reset");
     textP.innerText = "";
-    textWords = db[lang][Math.floor(Math.random() * db[lang].length)].split(" ");
 
+    textWords = db[lang][Math.floor(Math.random() * db[lang].length)].split(" ");
     for (let word of textWords) {
         textP.innerHTML += `<span>${word}</span> `;
     }
-    let resets = document.getElementsByClassName("reset");
+    
+    if (!localStorage.getItem("scores")) {
+        localStorage.setItem("scores", JSON.stringify([]));
+    }
+    scoresOfStorage = JSON.parse(localStorage.getItem("scores"));
+    if (scoresOfStorage.length === 0) {
+        averageScore = 0;
+    } else {
+        let scoreSum = scoresOfStorage.reduce((acc, cur) => {
+            return acc += cur;
+        }, 0);
+        averageScore = Math.round(scoreSum / scoresOfStorage.length);
+    }
+    
     if (lang === "rus") {
         testTitle.innerText = "Тест Набора";
         input.setAttribute("placeholder", "Печатай...");
-        for (let btn of resets) {
+        averageScoreText.innerText = `Ваша средняя скорость ${averageScore} WPM`;
+        for (let btn of resetBtns) {
             btn.innerText = "Повторить";
         }
     } else {
         testTitle.innerText = "Typing test";
         input.setAttribute("placeholder", "Type...");
-        for (let btn of resets) {
+        averageScoreText.innerText = `Your average speed is ${averageScore} WPM`;
+        for (let btn of resetBtns) {
             btn.innerText = "Reset";
         }
     }
@@ -56,15 +74,17 @@ function setInitials(lang) {
     input.focus();
     document.getElementById("modal").classList.remove("active");
     document.getElementById("main-section").classList.remove("blured");
-
 };
 setInitials("rus");
 
+averageReset.onclick = () => {
+    localStorage.setItem("scores", JSON.stringify([]));
+    averageScore = 0;
+    averageScoreText.innerText = intLang === "rus" ? `Ваша средняя скорость ${averageScore} WPM` : `Your average speed is ${averageScore} WPM`;
+}
 
-function showModal() {
-    const wpm = timePassed >= 59 ? winScore : ((timePassed / winScore) * 60).toFixed(0);
-    accuracy = (100 - ((incorrectTypingCount * 100) / allTypingCount)).toFixed(2);
-    if(intLang === "en") {
+function showModal(wpm) {
+    if (intLang === "en") {
         document.getElementById("wpm").innerHTML = `Your typing speed <br> ${wpm} <b>WPM</b> (Word Per Minute)`;
         document.getElementById("accuracy").innerHTML = `Your <b>Accuracy</b> <br> ${accuracy}%`;
     } else {
@@ -72,7 +92,7 @@ function showModal() {
         document.getElementById("accuracy").innerHTML = `Ваша <b>Точность</b> <br> ${accuracy}%`;
     }
     document.getElementById("modal").classList.add("active");
-    document.querySelector("#main-section").classList.add("blured");
+    document.getElementById("main-section").classList.add("blured");
     document.getElementById("modal-reset").onclick = resetProj;
     modalClose.addEventListener("click", (e) => {
         e.target.parentElement.classList.remove("active");
@@ -121,6 +141,7 @@ const checkLetter = (deleting) => {
     }
 };
 
+
 const setTiming = () => {
     let m = 59;
     interval = setInterval(() => {
@@ -133,15 +154,20 @@ const setTiming = () => {
                 m--;
                 timePassed++;
             } else {
+                const wpm = timePassed >= 59 ? winScore : ((timePassed / winScore) * 60).toFixed(0);
+                accuracy = (100 - ((incorrectTypingCount * 100) / allTypingCount)).toFixed(2);
+
                 clearInterval(interval);
                 blocked = true;
-                showModal();
+                scoresOfStorage.push(wpm);
+                localStorage.setItem("scores", JSON.stringify(scoresOfStorage));
+                showModal(wpm, accuracy);
             }
         } else {
             clearInterval(interval);
             m = 59;
         }
-    }, 500);
+    }, 1000);
 };
 
 input.addEventListener("input", (e) => {
@@ -174,4 +200,4 @@ function resetProj() {
     setInitials(intLang);
     spans[0].classList.add("selected");
 }
-reset.addEventListener("click",resetProj);
+reset.addEventListener("click", resetProj);

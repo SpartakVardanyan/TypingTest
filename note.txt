@@ -1,2 +1,1 @@
-fix logic of wpm
-loading...
+onhover average speed , to show reset score and complete it
