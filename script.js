@@ -27,7 +27,7 @@ function setInitials(lang) {
     for (let word of textWords) {
         textP.innerHTML += `<span>${word}</span> `;
     }
-    
+
     if (!localStorage.getItem("scores")) {
         localStorage.setItem("scores", JSON.stringify([]));
     }
@@ -40,7 +40,7 @@ function setInitials(lang) {
         }, 0);
         averageScore = Math.round(scoreSum / scoresOfStorage.length);
     }
-    
+
     if (lang === "rus") {
         testTitle.innerText = "Тест Набора";
         input.setAttribute("placeholder", "Печатай...");
@@ -116,7 +116,7 @@ const checkWord = () => {
         spans[currentWordIndex + 1] && spans[currentWordIndex + 1].classList.add("selected");
         winScore++;
         currentWordIndex++;
-        if(currentWordIndex % 3 === 0) textP.scrollTop += 13;
+        if (currentWordIndex % 5 === 0) textP.scrollTop += 30;
         input.value = "";
     } else {
         failScore++;
