@@ -333,7 +333,7 @@ select option {
     #text-area>p {
         line-height: 2.5rem;
         height: 16rem;
-        overflow: auto;
+        overflow: scroll;
         font-size: 1.6rem;
     }
 
