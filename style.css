@@ -331,9 +331,10 @@ select option {
     }
 
     #text-area>p {
-        line-height: 2rem;
-        ;
-        font-size: 1.4rem;
+        line-height: 2.5rem;
+        height: 16rem;
+        overflow: hidden;
+        font-size: 2rem;
     }
 
 }

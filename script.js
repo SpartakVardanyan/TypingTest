@@ -15,6 +15,7 @@ function setInitials(lang) {
     duration = document.getElementById("duration");
     reset = document.getElementById("reset");
     textP = document.querySelector("#text-area > p");
+    textP.scrollTop = 0;
     modalClose = document.getElementById("modal-close");
     testTitle = document.getElementById("test-title");
     averageScoreText = document.getElementById("average-score");
@@ -115,6 +116,7 @@ const checkWord = () => {
         spans[currentWordIndex + 1] && spans[currentWordIndex + 1].classList.add("selected");
         winScore++;
         currentWordIndex++;
+        if(currentWordIndex % 3 === 0) textP.scrollTop += 13;
         input.value = "";
     } else {
         failScore++;
